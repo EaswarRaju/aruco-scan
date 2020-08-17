@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "a2f21f764afbaed24fa2f3412298a300",
+    "revision": "571faf3f126a72807825fe05a6350b12",
     "url": "/aruco-scan/index.html"
   },
   {
-    "revision": "9bc298469379a6157cca",
+    "revision": "a342af1c07619745df38",
     "url": "/aruco-scan/static/css/main.deb843eb.chunk.css"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/aruco-scan/static/js/2.76194812.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "9bc298469379a6157cca",
-    "url": "/aruco-scan/static/js/main.a1a71439.chunk.js"
+    "revision": "a342af1c07619745df38",
+    "url": "/aruco-scan/static/js/main.8e6d5e1d.chunk.js"
   },
   {
     "revision": "9d6bde02de1997a65080",
