@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/aruco-scan/static/css/main.deb843eb.chunk.css",
-    "main.js": "/aruco-scan/static/js/main.8e6d5e1d.chunk.js",
-    "main.js.map": "/aruco-scan/static/js/main.8e6d5e1d.chunk.js.map",
+    "main.js": "/aruco-scan/static/js/main.a848d96e.chunk.js",
+    "main.js.map": "/aruco-scan/static/js/main.a848d96e.chunk.js.map",
     "runtime-main.js": "/aruco-scan/static/js/runtime-main.2de87190.js",
     "runtime-main.js.map": "/aruco-scan/static/js/runtime-main.2de87190.js.map",
     "static/js/2.76194812.chunk.js": "/aruco-scan/static/js/2.76194812.chunk.js",
     "static/js/2.76194812.chunk.js.map": "/aruco-scan/static/js/2.76194812.chunk.js.map",
     "index.html": "/aruco-scan/index.html",
-    "precache-manifest.66522b02d801061cb24eee7902a9b482.js": "/aruco-scan/precache-manifest.66522b02d801061cb24eee7902a9b482.js",
+    "precache-manifest.dc13def8122dd1f8c01cd1a251bd6c9a.js": "/aruco-scan/precache-manifest.dc13def8122dd1f8c01cd1a251bd6c9a.js",
     "service-worker.js": "/aruco-scan/service-worker.js",
     "static/css/main.deb843eb.chunk.css.map": "/aruco-scan/static/css/main.deb843eb.chunk.css.map",
     "static/js/2.76194812.chunk.js.LICENSE.txt": "/aruco-scan/static/js/2.76194812.chunk.js.LICENSE.txt"
@@ -17,6 +17,6 @@
     "static/js/runtime-main.2de87190.js",
     "static/js/2.76194812.chunk.js",
     "static/css/main.deb843eb.chunk.css",
-    "static/js/main.8e6d5e1d.chunk.js"
+    "static/js/main.a848d96e.chunk.js"
   ]
 }
