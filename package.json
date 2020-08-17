@@ -1,6 +1,7 @@
 {
   "name": "aruco-scan",
   "version": "0.1.0",
+  "homepage": "https://easwarraju.github.io/aruco-scan",
   "private": true,
   "dependencies": {
     "classnames": "^2.2.6",

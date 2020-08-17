@@ -6,14 +6,10 @@ import './App.scss';
 function App() {
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
-  const mirrorRef = useRef(null);
   const videoRef = useRef(null);
   const [mediaStream, setMediaStream] = useState(null);
   const [hasCapture, setHasCapture] = useState(false);
-  const [tolerance, setTolerance] = useState(40);
   const [animationFrame, setAnimationFrame] = useState(null);
-  const [showMirror, setShowMirror] = useState(false);
-  const [showGreyScaled, setShowGreyScaled] = useState(false);
 
   const TOP_LEFT = 0;
   const TOP_RIGHT = 1;
@@ -34,6 +30,48 @@ function App() {
       }
     }
     return allMarkersDetected;
+  };
+
+  const getMarkers = () => {
+    const detector = new AR.Detector();
+    const MAX_TOLERANCE = 80;
+    const TOLERANCE_INTERVAL = 5;
+
+    const dataSets = [];
+    let index = 0;
+
+    const canvas = canvasRef.current;
+    const context = canvas.getContext('2d');
+
+    for (let tolerance = 0; tolerance <= MAX_TOLERANCE; tolerance += TOLERANCE_INTERVAL) {
+      dataSets[index] = context.getImageData(0, 0, canvas.width, canvas.height);
+      index++;
+    }
+
+    for (let i = 0; i < dataSets[0].data.length; i += 4) {
+      index = 0;
+      for (let tolerance = 0; tolerance <= MAX_TOLERANCE; tolerance += TOLERANCE_INTERVAL) {
+        const avg = (dataSets[index].data[i] + dataSets[index].data[i + 1] + dataSets[index].data[i + 2]) / 3;
+
+        dataSets[index].data[i] = avg < tolerance ? 0 : dataSets[index].data[i];
+        dataSets[index].data[i + 1] = avg < tolerance ? 0 : dataSets[index].data[i + 1];
+        dataSets[index].data[i + 2] = avg < tolerance ? 0 : dataSets[index].data[i + 2];
+        index++;
+      }
+    }
+
+    index = 0;
+
+    for (let tolerance = 0; tolerance <= MAX_TOLERANCE; tolerance += TOLERANCE_INTERVAL) {
+      const markers = detector.detect(dataSets[index]);
+
+      index++;
+
+      if (isAllMarkersDetected(markers)) {
+        return markers;
+      }
+    }
+    return false
   };
 
   const getCorners = (markers) => {
@@ -112,9 +150,6 @@ function App() {
     canvas.width = canvas.offsetWidth;
     canvas.height = canvas.offsetHeight;
 
-    mirrorRef.current.width = canvas.width;
-    mirrorRef.current.height = canvas.height;
-
     startCamera();
   }, []);
 
@@ -126,7 +161,6 @@ function App() {
 
   useEffect(() => {
     if (mediaStream) {
-      const detector = new AR.Detector();
       const tick = () => {
         if (mediaStream) {
           {
@@ -135,24 +169,10 @@ function App() {
             if (video && video.readyState === video.HAVE_ENOUGH_DATA) {
               const context = canvas.getContext('2d');
               context.drawImage(video, 0, 0, canvas.width, canvas.height);
-              const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+
+              const markers = getMarkers();
     
-              console.log(tolerance);
-    
-              for (let i = 0; i < imageData.data.length; i += 4) {
-                const avg = (imageData.data[i] + imageData.data[i + 1] + imageData.data[i + 2]) / 3;
-    
-                imageData.data[i] = avg < tolerance ? 0 : (showGreyScaled ? avg : imageData.data[i]);
-                imageData.data[i + 1] = avg < tolerance ? 0 : (showGreyScaled ? avg : imageData.data[i + 1]);
-                imageData.data[i + 2] = avg < tolerance ? 0 : (showGreyScaled ? avg : imageData.data[i + 2]);
-              }
-    
-              const mirrorContext = mirrorRef.current.getContext('2d');
-              mirrorContext.putImageData(imageData, 0, 0, 0, 0, canvas.width, canvas.height);
-    
-              const markers = detector.detect(imageData);
-    
-              if (isAllMarkersDetected(markers)) {
+              if (markers) {
                 const corners = getCorners(markers);
                 context.drawImage(
                   context.canvas,
@@ -186,7 +206,7 @@ function App() {
     return () => {
       stopCamera(mediaStream);
     };
-  }, [mediaStream, showGreyScaled, tolerance]); // eslint-disable-line
+  }, [mediaStream]);
   
   return (
     <div className="scan-edit" ref={containerRef}>
@@ -198,12 +218,10 @@ function App() {
       <div className="camera-area">
         <canvas
           className={classNames({
-            'has-capture': hasCapture,
-            hidden: showMirror
+            'has-capture': hasCapture
           })}
           ref={canvasRef}
         />
-        <canvas className={classNames({hidden: !showMirror})} ref={mirrorRef} />
       </div>
       {hasCapture &&
         <button
@@ -217,48 +235,10 @@ function App() {
         </button>
       }
       <div className="scan-footer">
-        <label>
-          <span>Tolerance: </span>
-          <input type="text" onChange={({ target: { value } }) => {
-            stopCamera(mediaStream);
-            setMediaStream(null);
-            window.cancelAnimationFrame(animationFrame);
-            setTolerance(parseInt(value, 10));
-            startCamera();
-          }} />
-        </label>
-        <label onClick={() => {
-          setShowMirror(false);
-        }}>
-          <input type="radio" name="canvas" />
-          <span>Original</span>
-        </label>
-        <label onClick={() => {
-          setShowMirror(true);
-        }}>
-          <input type="radio" name="canvas" />
-          <span>Mirror</span>
-        </label>
-        <label onClick={() => {
+        <button onClick={() => {
+          stopCapture();
           stopCamera(mediaStream);
-          setMediaStream(null);
-          window.cancelAnimationFrame(animationFrame);
-          setShowGreyScaled(false);
-          startCamera();
-        }}>
-          <input type="radio" name="color" />
-          <span>Color</span>
-        </label>
-        <label onClick={() => {
-          stopCamera(mediaStream);
-          setMediaStream(null);
-          window.cancelAnimationFrame(animationFrame);
-          setShowGreyScaled(true);
-          startCamera();
-        }}>
-          <input type="radio" name="color" />
-          <span>Mono</span>
-        </label>
+        }}>Stop</button>
       </div>
     </div>
   );
