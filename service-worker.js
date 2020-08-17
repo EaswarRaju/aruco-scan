@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/aruco-scan/precache-manifest.421fa886ed051ee8369570876b554a07.js"
+  "/aruco-scan/precache-manifest.6ee675238f116f6ee3ae00c4d56a32d5.js"
 );
 
 self.addEventListener('message', (event) => {
